@@ -128,11 +128,13 @@ map ::
 It is possible to show multiple markers on the same map. Any attribute
 that starts with `+` defines a new marker:
 
+```quaint
 map ::
   +Home = 4000 Coloniale, Montreal, Quebec
   +Work =
     address = 1000 Rachel Ouest, Montreal, Quebec
     info = This is where I work
+```
 
 For each marker, the attribute name will be the `label`. The map's
 bounds will be adjusted to include all markers, then zoomed out one
