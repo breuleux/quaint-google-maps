@@ -1,0 +1,17 @@
+
+require:
+   inquirer-promise as inq
+   chalk
+
+
+async quaint-setup{config, instructions} =
+   url = "https://github.com/breuleux/quaint-google-maps"
+   print 'Plugin documentation: {chalk.bold.cyan{url}}'
+
+   data = config.plugins["google-maps"] or= {=}
+   data &: {
+      api-key = [await inq.input{"Google Maps API key (or leave blank):"}] or null
+   }
+
+
+provide = quaint-setup

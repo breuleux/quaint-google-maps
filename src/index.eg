@@ -1,0 +1,82 @@
+
+require:
+   path
+
+
+reg{@, options} =
+
+   api-key =
+      if options.api-key as key: 'key={key}&'
+      else: ''
+
+   callback = 'callback=$$quaintGoogleMapsEntry'
+
+   @register-resources with {
+      "js/google-maps.js" => {
+         path = 'https://maps.googleapis.com/maps/api/js?{api-key}{callback}'
+         path-is-url = true
+         contents = false
+         async = true
+         defer = true
+         type = .js
+         method = .head
+      }
+      "js/gmaps-init.js" => {
+         path = path.join{__dirname, "../client/init.js"}
+         contents = true
+         type = .js
+         method = .head
+      }
+   }
+
+
+
+var __gid = 0
+
+
+install{@, options} =
+   reg{@, options}
+   @register-macros with {
+      map{engine, body} =
+         id = 'gmap-{__gid += 1}'
+         params =
+            match engine.tools.to-data{body, {leaf{x} = x.raw{}}}:
+               String? s -> {address = s}
+               cfg -> cfg
+         params.div-id = id
+
+         results = {
+            div.google-map % id = id
+         }
+
+         populate-info{params} where
+            populate-info{x} =
+               if x??.info:
+                  info-id = 'gmap-info-{__gid += 1}'
+                  results.push with
+                     div %
+                        id = info-id
+                        style = "display:none"
+                        engine.gen-from-source{x.info}
+                  x.info = info-id
+               if Array? x or Object? x:
+                  items{x} each {k, v} ->
+                     populate-info{v}
+
+         results.push with
+            script[raw] %
+               '$$quaintGoogleMapsList.push({JSON.stringify{params}});'
+
+         results
+   }
+
+
+main{*match} =
+   {@, options = {=}} when @is-quaint-engine ->
+      install{@, options}
+   {options = {=}} ->
+      {@} -> main{@, options}
+
+
+provide = main
+
