@@ -86,7 +86,6 @@ function $$quaintGoogleMapsEntry() {
 
         var coords0 = listCoordinates(config);
         completeAllCoordinates(coords0, [], function (coords) {
-            console.log(coords);
             var map;
             var markers = coords.map(function (coord) {
                 var marker = new google.maps.Marker({
