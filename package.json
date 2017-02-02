@@ -1,7 +1,7 @@
 {
   "name": "quaint-google-maps",
   "description": "Embed Google Maps in Quaint documents",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "format": "cjs",
   "repository": {
     "type": "git",
